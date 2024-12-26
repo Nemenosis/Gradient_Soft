@@ -6,8 +6,8 @@ MIN_PROXY_SCORE = 50  # for mining mode
 #########################################
 APPROVE_EMAIL = True  # approve email (NEEDED IMAP AND ACCESS TO EMAIL)
 #
-GRADIENT_DATA = "data/FirsMail.db"
-IMAP_DOMAIN = "imap.firstmail.ltd"  # not always works
+GRADIENT_DATA = "data/GradientData.db"
+IMAP_DOMAIN = "imap.firstmail.ltd"  # CHANGE ON YOUR IMAP DOMAIN
 
 #########################################
 
@@ -17,21 +17,21 @@ STOP_ACCOUNTS_WHEN_SITE_IS_DOWN = True  # stop account for 20 minutes, to reduce
 CHECK_POINTS = False  # show point for each account every nearly 10 minutes
 
 # Mining mode
-MINING_MODE = False
+MINING_MODE = False # TRUE IF MINING MODE
 
 # REGISTER PARAMETERS ONLY
-REGISTER_ACCOUNT_ONLY = False
+REGISTER_ACCOUNT_ONLY = False # TRUE IF REGISTER MODE
 REGISTER_TASKS = 2 # CHANGE FOR ACCOUNT REGISTER ONLY
 MULTIPROCESS = 5 # CHANGE FOR MINING AND FOR NODE REGISTER ONLY
-NODE_REGISTER = True #
-DB_INIT = False
+NODE_REGISTER = False # TRUE IF NODE REGISTER MODE
+DB_INIT = False # TRUE FOR DATABASE INITIALIZATION
 
 
 # 8e2a3ad7b1359e109963fb284aa2d019
 TWO_CAPTCHA_API_KEY = ""
 ANTICAPTCHA_API_KEY = ""
 CAPMONSTER_API_KEY = ""
-CAPSOLVER_API_KEY = "CAP-9F7A5464C1D958196DBD084F3AF4284B"
+CAPSOLVER_API_KEY = ""
 CAPTCHAAI_API_KEY = ""
 
 # Captcha params, left empty
