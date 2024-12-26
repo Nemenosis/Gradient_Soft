@@ -1,0 +1,14 @@
+2captcha_python==1.2.2
+aiohttp==3.11.8
+aiosqlite==0.20.0
+art==6.4
+beautifulsoup4==4.12.3
+better_proxy==1.2.0
+captchatools==1.5.0
+imap_tools==1.7.3
+loguru==0.7.2
+pytz==2023.3.post1
+random_user_agent==1.0.1
+Requests==2.32.3
+termcolor==2.5.0
+TwoCaptcha==0.0.1
