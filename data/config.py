@@ -6,7 +6,7 @@ MIN_PROXY_SCORE = 50  # for mining mode
 #########################################
 APPROVE_EMAIL = True  # approve email (NEEDED IMAP AND ACCESS TO EMAIL)
 #
-DATABASE_PATH = "data/FirsMail.db"
+GRADIENT_DATA = "data/FirsMail.db"
 IMAP_DOMAIN = "imap.firstmail.ltd"  # not always works
 
 #########################################

@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 import requests
 import argparse
 import multiprocessing
-from data.config import REGISTER_ACCOUNT_ONLY,DATABASE_PATH,MULTIPROCESS, CLAIM_REWARDS_ONLY,DB_INIT, MINING_MODE, ADD_NEW_PROXY, ADD_NEW_ACCOUNTS,REGISTER_TASKS,NODE_REGISTER
+from data.config import REGISTER_ACCOUNT_ONLY,GRADIENT_DATA,MULTIPROCESS, CLAIM_REWARDS_ONLY,DB_INIT, MINING_MODE,REGISTER_TASKS,NODE_REGISTER
 from src.autoReger.autoReger import AutoReger
 import asyncio
 from src.dataBase.dataBase import DatabaseManager
@@ -93,7 +93,7 @@ async def run_registration_process(db_manager: DatabaseManager, ref_code: str, R
     await asyncio.gather(*tasks)
 
 def start_node_registration_process(emails_chunk,process_index):
-    db_path = DATABASE_PATH
+    db_path = GRADIENT_DATA
     database_manager = DatabaseManager(db_path)
 
     software_names = [SoftwareName.CHROME.value, SoftwareName.FIREFOX.value]
@@ -137,7 +137,7 @@ def start_node_registration_process(emails_chunk,process_index):
 
 
 async def run_node_registration_multiprocess():
-    db_path = DATABASE_PATH
+    db_path = GRADIENT_DATA
     database_manager = DatabaseManager(db_path)
     emails = await database_manager.get_all_data(True, False)
 
@@ -164,7 +164,7 @@ async def run_node_registration_multiprocess():
 
 
 def start_mining_process(emails_chunk):
-    db_path = DATABASE_PATH
+    db_path = GRADIENT_DATA
     database_manager = DatabaseManager(db_path)
 
     software_names = [SoftwareName.CHROME.value, SoftwareName.FIREFOX.value]
@@ -190,7 +190,7 @@ def start_mining_process(emails_chunk):
 
 async def run_mining_multiprocess():
 
-    db_path = DATABASE_PATH
+    db_path = GRADIENT_DATA
     database_manager = DatabaseManager(db_path)
     emails = await database_manager.get_all_emails_node()
     if not emails or len(emails) == 0:
@@ -215,7 +215,7 @@ async def run_mining_multiprocess():
 
 async def initDatabase():
     if DB_INIT:
-        db_manager = DatabaseManager(DATABASE_PATH)
+        db_manager = DatabaseManager(GRADIENT_DATA)
         await db_manager.create_table()
         await db_manager.create_users_from_file('data/mail.txt')
         await db_manager.load_proxies_from_file('data/proxy.txt')
@@ -227,7 +227,7 @@ async def initDatabase():
 async def run_auto_reger():
         # database.db
         # GradientData.db
-        db_path = DATABASE_PATH
+        db_path = GRADIENT_DATA
         ref_code = "TZ0RLT"
         database_manager = DatabaseManager(db_path)
         if DB_INIT:
