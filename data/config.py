@@ -1,33 +1,18 @@
-from operator import truediv
+GRADIENT_DATA = "data/GradientData.db" # DONT CHANGE
 
-
-MIN_PROXY_SCORE = 50  # for mining mode
-
-#########################################
-APPROVE_EMAIL = True  # approve email (NEEDED IMAP AND ACCESS TO EMAIL)
-#
-GRADIENT_DATA = "data/GradientData.db"
 IMAP_DOMAIN = "imap.firstmail.ltd"  # CHANGE ON YOUR IMAP DOMAIN
-
-#########################################
-
-CLAIM_REWARDS_ONLY = False
-
-STOP_ACCOUNTS_WHEN_SITE_IS_DOWN = True  # stop account for 20 minutes, to reduce proxy traffic usage
-CHECK_POINTS = False  # show point for each account every nearly 10 minutes
 
 # Mining mode
 MINING_MODE = False # TRUE IF MINING MODE
 
 # REGISTER PARAMETERS ONLY
 REGISTER_ACCOUNT_ONLY = False # TRUE IF REGISTER MODE
-REGISTER_TASKS = 2 # CHANGE FOR ACCOUNT REGISTER ONLY
-MULTIPROCESS = 5 # CHANGE FOR MINING AND FOR NODE REGISTER ONLY
+REGISTER_TASKS = 5 # CHANGE FOR ACCOUNT REGISTER ONLY
+MULTIPROCESS = 5 # CHANGE FOR MINING AND FOR NODE REGISTER ONLY CHOOSE NUMBER OF YOUR CPU CORES
 NODE_REGISTER = False # TRUE IF NODE REGISTER MODE
 DB_INIT = False # TRUE FOR DATABASE INITIALIZATION
 
 
-# 8e2a3ad7b1359e109963fb284aa2d019
 TWO_CAPTCHA_API_KEY = ""
 ANTICAPTCHA_API_KEY = ""
 CAPMONSTER_API_KEY = ""

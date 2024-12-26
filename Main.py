@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 import requests
 import argparse
 import multiprocessing
-from data.config import REGISTER_ACCOUNT_ONLY,GRADIENT_DATA,MULTIPROCESS, CLAIM_REWARDS_ONLY,DB_INIT, MINING_MODE,REGISTER_TASKS,NODE_REGISTER
+from data.config import REGISTER_ACCOUNT_ONLY,GRADIENT_DATA,MULTIPROCESS,DB_INIT, MINING_MODE,REGISTER_TASKS,NODE_REGISTER
 from src.autoReger.autoReger import AutoReger
 import asyncio
 from src.dataBase.dataBase import DatabaseManager
