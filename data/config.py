@@ -6,7 +6,7 @@ MIN_PROXY_SCORE = 50  # for mining mode
 #########################################
 APPROVE_EMAIL = True  # approve email (NEEDED IMAP AND ACCESS TO EMAIL)
 #
-DATABASE_PATH = "data/FirsMail.db"
+DATABASE_PATH = "data/GradienData.db"
 IMAP_DOMAIN = "imap.firstmail.ltd"  # not always works
 
 #########################################
@@ -23,8 +23,8 @@ MINING_MODE = False
 REGISTER_ACCOUNT_ONLY = False
 REGISTER_TASKS = 2 # CHANGE FOR ACCOUNT REGISTER ONLY
 MULTIPROCESS = 5 # CHANGE FOR MINING AND FOR NODE REGISTER ONLY
-NODE_REGISTER = True #
-DB_INIT = False
+NODE_REGISTER = False #
+DB_INIT = True
 
 
 # 8e2a3ad7b1359e109963fb284aa2d019
