@@ -1,37 +1,22 @@
-from operator import truediv
+GRADIENT_PATH = "data/GradientData.db" # DONT CHANGE
 
-
-MIN_PROXY_SCORE = 50  # for mining mode
-
-#########################################
-APPROVE_EMAIL = True  # approve email (NEEDED IMAP AND ACCESS TO EMAIL)
-#
-DATABASE_PATH = "data/GradienData.db"
-IMAP_DOMAIN = "imap.firstmail.ltd"  # not always works
-
-#########################################
-
-CLAIM_REWARDS_ONLY = False
-
-STOP_ACCOUNTS_WHEN_SITE_IS_DOWN = True  # stop account for 20 minutes, to reduce proxy traffic usage
-CHECK_POINTS = False  # show point for each account every nearly 10 minutes
+IMAP_DOMAIN = "imap.firstmail.ltd"  # CHANGE ON YOUR IMAP DOMAIN
 
 # Mining mode
-MINING_MODE = True
+MINING_MODE = False # TRUE IF MINING MODE
 
 # REGISTER PARAMETERS ONLY
-REGISTER_ACCOUNT_ONLY = False
+REGISTER_ACCOUNT_ONLY = False # TRUE IF REGISTER MODE
 REGISTER_TASKS = 5 # CHANGE FOR ACCOUNT REGISTER ONLY
-MULTIPROCESS = 12 # CHANGE FOR MINING AND FOR NODE REGISTER ONLY
-NODE_REGISTER = False #
-DB_INIT = False
+MULTIPROCESS = 5 # CHANGE FOR MINING AND FOR NODE REGISTER ONLY CHOOSE NUMBER OF YOUR CPU CORES
+NODE_REGISTER = False # TRUE IF NODE REGISTER MODE
+DB_INIT = False # TRUE FOR DATABASE INITIALIZATION
 
 
-# 8e2a3ad7b1359e109963fb284aa2d019
 TWO_CAPTCHA_API_KEY = ""
 ANTICAPTCHA_API_KEY = ""
 CAPMONSTER_API_KEY = ""
-CAPSOLVER_API_KEY = "CAP-9F7A5464C1D958196DBD084F3AF4284B"
+CAPSOLVER_API_KEY = ""
 CAPTCHAAI_API_KEY = ""
 
 # Captcha params, left empty
