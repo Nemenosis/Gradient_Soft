@@ -26,20 +26,19 @@ class NodeMiner:
         url = f"https://api.gradient.network/api/sentrynode/get/{client_id}"
         headers = {"Authorization": f"Bearer {self.id_token}", "User-Agent": self.user_agent}
         async with session.get(url, headers=headers, proxy=self.proxy) as response:
-            while True:
-                try:
-                    if response.status == 403:
-                        logger.error(f"Access forbidden. Status code: 403 - mail {self.email}")
-                        return 403
+            try:
+                if response.status == 403:
+                    logger.error(f"Access forbidden. Status code: 403 - mail {self.email}")
+                    return 403
 
-                    if response.status != 200:
-                        logger.error("Failed to get node status. Status code: {}", response.status)
-                        return None
-                    response_data = await response.json()
-                    data = response_data.get("data", {})
-                    return data.get("banned"), data.get("connect")
-                except Exception as e:
-                    logger.error(f"Failed to get node banned. Error: {e}")
+                if response.status != 200:
+                    logger.error("Failed to get node status. Status code: {}", response.status)
+                    return None
+                response_data = await response.json()
+                data = response_data.get("data", {})
+                return data.get("banned"), data.get("connect")
+            except Exception as e:
+                logger.error(f"Failed to get node banned. Error: {e}")
 
     async def is_node_banned(self, session, client_id, mqtt_messenger):
         await asyncio.sleep(30)

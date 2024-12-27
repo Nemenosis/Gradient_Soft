@@ -185,10 +185,11 @@ class DatabaseManager:
         except Exception as e:
             logger.error(f"Error: {e}")
 
-    async def get_total_points(self) -> int:
+    async def get_total_points(self, Today: bool = False) -> int:
         try:
             async with aiosqlite.connect(self.db_path) as db:
-                cursor = await db.execute("SELECT SUM(point) FROM users;")
+                column = "TotalPoint" if Today else "TodayPoint"
+                cursor = await db.execute(f"SELECT SUM({column}) FROM statistics;")
                 result = await cursor.fetchone()
                 await cursor.close()
 
@@ -196,30 +197,6 @@ class DatabaseManager:
         except Exception as e:
             logger.error(f"Error: {e}")
             return 0
-
-    # async def get_all_emails(self) -> list:
-    #     try:
-    #         async with aiosqlite.connect(self.db_path) as db:
-    #             query = "SELECT email FROM users ORDER BY ROWID ASC;"
-    #             cursor = await db.execute(query)
-    #             rows = await cursor.fetchall()
-    #             await cursor.close()
-    #             return [row[0] for row in rows]
-    #     except Exception as e:
-    #         logger.error(f"Error: {e}")
-    #         return []
-
-    # async def get_all_passwords(self) -> list:
-    #     try:
-    #         async with aiosqlite.connect(self.db_path) as db:
-    #             query = "SELECT password FROM users ORDER BY ROWID ASC;"
-    #             cursor = await db.execute(query)
-    #             rows = await cursor.fetchall()
-    #             await cursor.close()
-    #             return [row[0] for row in rows]
-    #     except Exception as e:
-    #         logger.error(f"Error: {e}")
-    #         return []
 
     async def format_proxy(self, proxy_obj: Proxy) -> str:
         try:
@@ -470,7 +447,6 @@ class DatabaseManager:
                     logger.warning("⚠️ The number of available proxies is less than the number of emails!")
                     return
 
-                # Призначаємо email проксі
                 proxies = [row[0] for row in proxies]
                 for proxy, email in zip(proxies, emails):
                     try:
@@ -526,4 +502,63 @@ class DatabaseManager:
         except Exception as e:
             logger.error(f"Error: {e}")
             return []
+
+    async def add_statistics_table(self):
+
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute("""
+            CREATE TABLE IF NOT EXISTS statistics (
+                email TEXT UNIQUE NOT NULL,
+                TotalPoint INTEGER DEFAULT 0,
+                TodayPoint INTEGER DEFAULT 0,
+                Taps INTEGER DEFAULT 0,
+                TodayTaps INTEGER DEFAULT 0,
+                MimingTime INTEGER DEFAULT 0
+            );
+            """)
+            await db.commit()
+        logger.info("Table `statistics` created successfully.")
+
+    async def add_emails_to_statistics(self, emails):
+        async with aiosqlite.connect(self.db_path) as db:
+            for email in emails:
+                try:
+                    await db.execute("""
+                    INSERT INTO statistics (email)
+                    VALUES (?);
+                    """, (email,))
+                except aiosqlite.IntegrityError:
+                    logger.warning(f"Email {email} already exists in the statistics table.")
+            await db.commit()
+        logger.info("Emails added to statistics successfully.")
+
+    async def update_statistics(self, email, updates):
+
+        if not email:
+            logger.error("Email is required to update statistics.")
+            return
+
+        async with aiosqlite.connect(self.db_path) as db:
+            fields = []
+            values = []
+            for key in ["TotalPoint", "TodayPoint", "Taps", "TodayTaps", "MimingTime"]:
+                if key in updates:
+                    fields.append(f"{key} = ?")
+                    values.append(updates[key])
+
+            if fields:
+                values.append(email)
+                query = f"""
+                UPDATE statistics
+                SET {', '.join(fields)}
+                WHERE email = ?;
+                """
+                try:
+                    await db.execute(query, values)
+                    await db.commit()
+                    logger.info(f"Statistics updated successfully for email: {email}.")
+                except Exception as e:
+                    logger.error(f"Failed to update statistics for email {email}: {e}")
+            else:
+                logger.warning(f"No updates provided for email: {email}.")
 
