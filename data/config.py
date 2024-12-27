@@ -1,4 +1,4 @@
-GRADIENT_PATH = "data/GradientData.db" # DONT CHANGE
+GRADIENT_DATA = "data/GradientData.db" # DONT CHANGE
 
 IMAP_DOMAIN = "imap.firstmail.ltd"  # CHANGE ON YOUR IMAP DOMAIN
 
