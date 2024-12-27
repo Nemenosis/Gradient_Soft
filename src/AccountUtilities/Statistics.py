@@ -28,8 +28,8 @@ class Statistics:
             self.id_token = await self.idTokenVerifier.id_token_verification(session)
             url = f"https://api.gradient.network/api/sentrynode/get/{client_id}"
             headers = {"Authorization": f"Bearer {self.id_token}", "User-Agent": self.user_agent}
-            async with session.get(url, headers=headers, proxy=self.proxy) as response:
-                try:
+            try:
+                async with session.get(url, headers=headers, proxy=self.proxy) as response:
                     if response.status == 403:
                         logger.error(f"Access forbidden. Status code: 403 - mail {self.email}")
                         return False
@@ -51,9 +51,9 @@ class Statistics:
                     }
                     await self.db_manager.update_statistics(self.email, updates)
                     return True
-                except Exception as e:
-                    logger.error(f"Failed to get node banned. Error: {e}")
-                    return False
+            except Exception as e:
+                logger.error(f"Failed to get node banned. Error: {e}")
+                return False
 
     async def statistics_get(self):
         max_retries = 5
@@ -62,7 +62,7 @@ class Statistics:
             if await self.statistics():
                 break
             else:
-                self.db_manager.replace_banned_proxy(self.email)
+                await self.db_manager.replace_banned_proxy(self.email)
                 attempt += 1
 
     async def init_statistics(self):
@@ -75,34 +75,35 @@ class Statistics:
 async def process_email(email, db_manager, user_agent, semaphore):
     async with semaphore:
         point_fetcher = Statistics(email, db_manager, user_agent)
-        await point_fetcher.statistics()
+        await point_fetcher.statistics_get()
 
 
 async def main():
     # # Database initialization
-    db_manager = DatabaseManager('../../data/FirsMail.db')
+    db_manager = DatabaseManager('../../data/GradienData.db')
     # ststs = Statistics(0,db_manager,0,)
     # await ststs.init_statistics()
     # Fetch all emails from the database
-    # emails = await db_manager.get_all_data(True , False)
-    #
-    # # Configure User-Agent rotator
-    # software_names = [SoftwareName.CHROME.value, SoftwareName.FIREFOX.value]
-    # operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value, OperatingSystem.MAC.value]
-    # user_agent_rotator = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
-    #
-    # # Limit the number of concurrent tasks
-    # max_concurrent_tasks = 50
-    # semaphore = asyncio.Semaphore(max_concurrent_tasks)
-    #
-    # # Process emails concurrently with randomized User-Agent
-    # tasks = [
-    #     process_email(email, db_manager, user_agent_rotator.get_random_user_agent(), semaphore)
-    #     for email in emails
-    # ]
-    # await asyncio.gather(*tasks)
+    emails = await db_manager.get_all_data(True , False)
+
+    # Configure User-Agent rotator
+    software_names = [SoftwareName.CHROME.value, SoftwareName.FIREFOX.value]
+    operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value, OperatingSystem.MAC.value]
+    user_agent_rotator = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
+
+    # Limit the number of concurrent tasks
+    max_concurrent_tasks = 50
+    semaphore = asyncio.Semaphore(max_concurrent_tasks)
+
+    # Process emails concurrently with randomized User-Agent
+    tasks = [
+        process_email(email, db_manager, user_agent_rotator.get_random_user_agent(), semaphore)
+        for email in emails
+    ]
+    await asyncio.gather(*tasks)
 
     point = await db_manager.get_total_points(False)
-    logger.info(f"Total points: {point}")
+    pointTotal = await db_manager.get_total_points(True)
+    logger.info(f"Total points:{pointTotal} points today: {point}")
 if __name__ == "__main__":
     asyncio.run(main())
