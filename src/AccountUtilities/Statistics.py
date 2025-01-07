@@ -80,7 +80,7 @@ async def process_email(email, db_manager, user_agent, semaphore):
 
 async def main():
     # # Database initialization
-    db_manager = DatabaseManager('../../data/GradienData.db')
+    db_manager = DatabaseManager('../../data/GradientData.db')
     # ststs = Statistics(0,db_manager,0,)
     # await ststs.init_statistics()
     # Fetch all emails from the database
