@@ -20,12 +20,4 @@ if exist requirements.txt (
     exit /b 1
 )
 
-REM Запускаем батник "софт"
-if exist soft.bat (
-    call soft.bat
-) else (
-    echo soft.bat not found!
-    exit /b 1
-)
-
 pause
