@@ -43,7 +43,7 @@ def bot_info(name: str = ""):
     print(
         f"{colored('Nemenosis <crypto/> moves:', color='light_red')} "
         f"{colored(clickable_link, color='light_red')}\n"
-        f"{colored(f"Git-hub {git_hub}  ",color="light_red")}\n"
+        f"{colored(f'Git-hub {git_hub}', color='light_red')}\n"
         f"{colored('Version 1.0', color='light_red')}\n"
         f"{additional_text}\n"
     )
