@@ -1,32 +1,31 @@
 @echo off
-echo --- Проверяем наличие Python ---
-python --version >nul 2>&1
-IF ERRORLEVEL 1 (
-    echo [ОШИБКА]: Python не установлен! Установите Python и добавьте его в PATH.
-    pause
+REM Убедитесь, что вы находитесь в правильной директории
+cd /d "%~dp0"
+
+REM Устанавливаем виртуальное окружение
+if not exist .venv (
+    echo Creating virtual environment...
+    python -m venv .venv
+)
+
+REM Активируем виртуальное окружение
+call .venv\Scripts\activate
+
+REM Устанавливаем зависимости
+if exist requirements.txt (
+    echo Installing dependencies...
+    pip install -r requirements.txt
+) else (
+    echo requirements.txt not found!
     exit /b 1
 )
 
-echo --- Создаем виртуальное окружение ---
-IF NOT EXIST venv (
-    python -m venv venv
-    echo Виртуальное окружение создано.
-) ELSE (
-    echo Виртуальное окружение уже существует.
-)
-
-echo --- Активируем виртуальное окружение ---
-call venv\Scripts\activate
-
-echo --- Устанавливаем зависимости ---
-pip install --upgrade pip
-pip install -r requirements.txt
-
-IF ERRORLEVEL 1 (
-    echo [ОШИБКА]: Не удалось установить зависимости!
-    pause
+REM Запускаем батник "софт"
+if exist soft.bat (
+    call soft.bat
+) else (
+    echo soft.bat not found!
     exit /b 1
 )
-echo Зависимости успешно установлены.
-deactivate
+
 pause
