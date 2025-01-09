@@ -353,7 +353,7 @@ class DatabaseManager:
     async def replace_banned_proxy(self, email: str):
         try:
             current_time = int(time.time())
-            future_time = current_time + 10 * 60
+            future_time = current_time + 30 * 60
 
             async with aiosqlite.connect(self.db_path) as db:
                 await db.execute("BEGIN IMMEDIATE;")  # Початок транзакції

@@ -1,6 +1,9 @@
 import random
 
 
+# OopCompanion:suppressRename
+
+
 class PacketId:
     def __init__(self):
         self.value = random.randint(0, 65535)
