@@ -258,20 +258,18 @@ class AutoReger:
 
     async def process_registration(self,session, filename):
         try:
-
-            # 1. Check if the email already exists
             max_retries = 3
             attempts = 0
 
             while attempts < max_retries:
                 is_exists = await self.is_exists(session)
 
-                if is_exists == 'error':  # Якщо отримано 'error', повторити спробу з новим проксі
+                if is_exists == 'error':
                     logger.warning(f"Attempt {attempts + 1}: Proxy error, retrying...")
                     attempts += 1
-                    continue  # Переходить до наступної ітерації без інкрементації спроби
+                    continue
 
-                if is_exists:  # Email існує
+                if is_exists:
                     logger.error(f"Email {self.email} already exists. Cannot proceed with registration.")
                     return
                 break
@@ -280,21 +278,18 @@ class AutoReger:
                 logger.error("Exceeded maximum retries for checking email.")
                 return
 
-            # 3. Register the user
             id_token, refresh_token = await self.register_user(session)
             if not id_token or not refresh_token:
                 await self.aborted_mail(filename)
                 logger.error("User registration failed. Process aborted.")
                 return
 
-            # 4. Verify the token
             verified = await self.verif_token(session, id_token)
             if not verified:
                 await self.aborted_mail(filename)
                 logger.error("Token verification failed. Process aborted.")
                 return
 
-            # 2. Solve captcha (assuming `solve_captcha` is already defined)
             captcha_service = CaptchaService()
 
             captcha_token = await captcha_service.get_captcha_token_async()
@@ -303,21 +298,18 @@ class AutoReger:
                 logger.error("Failed to solve captcha. Registration process aborted.")
                 return
 
-            # 5. Send the captcha token
             captcha_verification = await self.send_captcha_token(session, captcha_token, id_token)
             if not captcha_verification:
                 await self.aborted_mail(filename)
                 logger.error("Captcha token verification failed. Process aborted.")
                 return
 
-            # 6. Verify email with the code received via email
             email_verified = await self.verify_email_with_code(session, id_token)
             if not email_verified:
                 await self.aborted_mail(filename)
                 logger.error("Email verification failed. Process aborted.")
                 return
 
-            # 7. Refresh the ID token
             new_id_token = await self.refresh_id_token(session, refresh_token)
             if not new_id_token:
                 await self.aborted_mail(filename)
@@ -330,7 +322,6 @@ class AutoReger:
                 logger.error("Token verification failed. Process aborted.")
                 return
 
-            # 8. Register the profile with the referral code
             profile_registered = await self.register_profile(session, new_id_token)
             if not profile_registered:
                 await self.aborted_mail(filename)
@@ -344,7 +335,6 @@ class AutoReger:
                 logger.warning("Profile request failed. Process aborted.")
                 return
 
-            # 9. Registration process complete
             logger.info(f"Registration process completed successfully for email: {self.email}")
 
         except Exception as e:

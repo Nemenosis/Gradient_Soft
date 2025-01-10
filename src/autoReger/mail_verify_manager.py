@@ -15,7 +15,7 @@ class MailVerif:
 
     async def get_code(self):
         code = ""
-        # delay = random.uniform(120, 180)  # Задержка от 3 до 10 секунд
+        # delay = random.uniform(120, 180)
         # logger.info(f"Delaying connection to IMAP server for {self.email} by {delay:.2f} seconds.")
         # time.sleep(delay)
         try:

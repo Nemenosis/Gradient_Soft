@@ -59,7 +59,7 @@ class NodeMiner:
                     await asyncio.sleep(60)
                 else:
                     logger.info("✅ Node is not banned - mail {}", self.email)
-                break  # Вихід з циклу, якщо connect_status == True
+                break
 
             elif banned_status == 403 or banned_status is None:
                 logger.error("Failed to get node status - mail {}", self.email)

@@ -2,6 +2,9 @@ import time
 from src.messenger.packet_id_counter import PacketId
 
 
+# OopCompanion:suppressRename
+
+
 class PacketPreparer:
     def __init__(self, info, packet_id: PacketId, version):
         self.local_id = info["clientid"]

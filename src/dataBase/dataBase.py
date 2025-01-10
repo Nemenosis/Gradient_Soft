@@ -233,25 +233,20 @@ class DatabaseManager:
 
     async def load_proxies_from_file(self, file_path: str):
         try:
-            # Отримати всі email із проксі таблиці
             emails = await self.get_all_emails_from_proxy()
 
-            # Читаємо проксі з файлу
             with open(file_path, 'r') as f:
                 proxies = [line.strip() for line in f if line.strip()]
 
-            # Перевірка на порожній файл
             if not proxies:
                 logger.error("Proxy file is empty.")
                 return
 
-            # Перевірка кількості email та проксі
             if len(emails) > len(proxies):
                 logger.warning(f"Not enough proxies in the file ({len(proxies)}). "
                                f"Total emails: {len(emails)}. Operation aborted.")
                 return
 
-            # Форматуємо проксі
             formatted_proxies = []
             for proxy in proxies:
                 parts = proxy.strip().split(":")
@@ -264,13 +259,10 @@ class DatabaseManager:
                 formatted_proxy = await self.format_proxy(proxy_obj)
                 formatted_proxies.append(formatted_proxy)
 
-            # Додаємо нові проксі до БД
             await self.create_proxies(formatted_proxies)
 
-            # Видаляємо неактуальні проксі, яких немає у файлі
             await self.delete_proxies_not_in_file(formatted_proxies)
 
-            # Присвоюємо email новим проксі
             await self.assign_emails_to_null_proxies(emails)
 
             logger.info("Proxies successfully loaded, cleaned, and assigned emails.")
@@ -353,12 +345,11 @@ class DatabaseManager:
     async def replace_banned_proxy(self, email: str):
         try:
             current_time = int(time.time())
-            future_time = current_time + 30 * 60
+            future_time = current_time + 20 * 60
 
             async with aiosqlite.connect(self.db_path) as db:
-                await db.execute("BEGIN IMMEDIATE;")  # Початок транзакції
+                await db.execute("BEGIN IMMEDIATE;")
 
-                # Запит на отримання поточного проксі та нового доступного проксі
                 query_get_proxies = """
                     SELECT proxy, 
                            (SELECT proxy FROM proxy WHERE (status IS NULL OR status < ?) AND email IS NULL LIMIT 1) AS new_proxy
@@ -374,7 +365,6 @@ class DatabaseManager:
                 new_proxy = result[1] if result else None
 
                 if new_proxy:
-                    # Перевіряємо, чи новий проксі все ще доступний
                     cursor = await db.execute("SELECT email FROM proxy WHERE proxy = ? AND email IS NULL;",
                                               (new_proxy,))
                     check_result = await cursor.fetchone()
@@ -385,7 +375,6 @@ class DatabaseManager:
                         await db.rollback()
                         return
 
-                    # Видаляємо email з поточного проксі
                     if current_proxy:
                         await db.execute("""
                             UPDATE proxy
@@ -394,7 +383,6 @@ class DatabaseManager:
                         """, (future_time, current_proxy))
                         logger.info(f"Removed email from proxy {current_proxy} and updated status to {future_time}.")
 
-                    # Призначаємо новий проксі
                     await db.execute("""
                         UPDATE proxy
                         SET email = ?, status = 'active'
@@ -404,12 +392,12 @@ class DatabaseManager:
                 else:
                     logger.info("No available proxy found.")
 
-                await db.commit()  # Фіксуємо транзакцію
+                await db.commit()
 
         except Exception as e:
             logger.error(f"Error replacing proxy for email {email}: {e}")
             try:
-                await db.rollback()  # Відкат змін у разі помилки
+                await db.rollback()
             except Exception as rollback_error:
                 logger.error(f"Failed to rollback transaction: {rollback_error}")
 
@@ -431,7 +419,6 @@ class DatabaseManager:
     async def assign_emails_to_null_proxies(self, emails: list):
         try:
             async with aiosqlite.connect(self.db_path) as db:
-                # Отримати всі проксі, у яких email є NULL
                 query_get_null_proxies = """
                     SELECT proxy FROM proxy WHERE email IS NULL LIMIT ?;
                 """
@@ -473,7 +460,6 @@ class DatabaseManager:
             async with aiosqlite.connect(self.db_path) as db:
                 column = 'email' if email else 'password'
 
-                # Вибираємо умову залежно від значення no_idToken
                 condition = "idToken IS NULL OR idToken = ''" if no_idToken else "idToken IS NOT NULL AND idToken != ''"
 
                 query = f"""
@@ -485,7 +471,6 @@ class DatabaseManager:
                 rows = await cursor.fetchall()
                 await cursor.close()
 
-                # Повертаємо список значень
                 return [row[0] for row in rows]
         except Exception as e:
             logger.error(f"Error fetching data without idToken: {e}")
