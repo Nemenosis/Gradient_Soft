@@ -1,6 +1,6 @@
 from src.AccountUtilities.CPU import cores
 
-GRADIENT_DATA = "data/GMX.db" # DONT CHANGE
+GRADIENT_DATA = "data/GradientData.db" # DONT CHANGE
 
 IMAP_DOMAIN = ""  # CHANGE ON YOUR IMAP DOMAIN FOR EXAMPLE: imap.gmx.net
 
