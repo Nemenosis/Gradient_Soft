@@ -249,12 +249,18 @@ class DatabaseManager:
 
             formatted_proxies = []
             for proxy in proxies:
-                parts = proxy.strip().replace("@", ":").split(":")
-                if len(parts) >= 4:
+                parts = proxy.strip().split(":")
+
+                if len(parts) == 4:
                     login = parts[0]
                     password = parts[1]
                     host = parts[2]
                     port = int(parts[3])
+                elif len(parts) == 2 and "@" in parts[1]:
+                    creds, address = parts[0], parts[1]
+                    login, password = creds.split(":")
+                    host, port = address.split(":")
+                    port = int(port)
                 else:
                     continue
 
