@@ -249,11 +249,14 @@ class DatabaseManager:
 
             formatted_proxies = []
             for proxy in proxies:
-                parts = proxy.strip().split(":")
-                host = parts[0]
-                port = int(parts[1])
-                login = parts[2] if len(parts) > 2 else None
-                password = parts[3] if len(parts) > 3 else None
+                parts = proxy.strip().replace("@", ":").split(":")
+                if len(parts) >= 4:
+                    login = parts[0]
+                    password = parts[1]
+                    host = parts[2]
+                    port = int(parts[3])
+                else:
+                    continue
 
                 proxy_obj = Proxy(host=host, port=port, login=login, password=password)
                 formatted_proxy = await self.format_proxy(proxy_obj)
