@@ -19,9 +19,7 @@ class DatabaseManager:
                 node TEXT,
                 clientid TEXT,
                 nodePassword TEXT,
-                idToken TEXT,
-                nodeKey TEXT,
-                point INTEGER DEFAULT 0
+                idToken TEXT
             );
             """)
             await db.execute("""

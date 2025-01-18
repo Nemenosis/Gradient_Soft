@@ -5,6 +5,7 @@ from loguru import logger
 from src.messenger.hex_converter import PacketPreparer
 from src.messenger.packet_id_counter import PacketId
 from aiohttp import BasicAuth
+import ssl
 
 
 class MqttMessenger:
@@ -13,13 +14,14 @@ class MqttMessenger:
         self.email = email
         self.packet_id = PacketId()
         self.packet_preparer = PacketPreparer(info, self.packet_id, version)
-        self.uri = "wss://wss.gradient.network:443/mqtt"
+        self.uri = "wss://wss.phantomclouds.online:443/mqtt"
         self.proxy = proxy
         self.user_agent = user_agent
         self.session = session
         self.websocket = None
         self.db_manager = db_manager
         self.headers = {
+            "Host": "wss.gradient.network",
             'Pragma': 'no-cache',
             'Origin': 'chrome-extension://caacbgbklghmpodbdafajbgdnegacfmo',
             'Accept-Language': 'en-US,en;q=0.9,uk;q=0.8,ru-RU;q=0.7,ru;q=0.6,en-GB;q=0.5,pl;q=0.4',
@@ -68,7 +70,8 @@ class MqttMessenger:
                 if self.websocket.closed:
                     logger.info(f"WebSocket is closed - mail {self.email}")
                     break
-                await asyncio.sleep(60)
+                delay = random.randint(10, 10)
+                await asyncio.sleep(30)
                 await self.websocket.send_bytes(self.packet_preparer.prepare_pingreq_packet())
                 response = await self.websocket.receive()
                 # Safeguard for logging
@@ -105,8 +108,11 @@ class MqttMessenger:
             await self.handle_exception(e, f"An error occurred during receiving {_type}")
 
     async def run_websocket(self, _type):
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
         try:
-            async with self.session.ws_connect(self.uri, headers=self.headers, proxy=self.proxy) as websocket:
+            async with self.session.ws_connect(self.uri, headers=self.headers, proxy=self.proxy, ssl=ssl_context) as websocket:
                 self.websocket = websocket
                 await self.handle_mining_frame(_type)
 
