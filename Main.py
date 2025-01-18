@@ -65,8 +65,7 @@ async def run_registration_process(db_manager: DatabaseManager, ref_code: str, R
         logger.error("The number of emails and passwords do not match!")
         return
 
-    proxy_limit = len(emails)
-    proxies = await db_manager.get_proxies_with_status_none(limit=proxy_limit)
+    proxies = await db_manager.get_all_proxies_from_db()
 
     if len(proxies) < len(emails):
         logger.warning("⚠️ The number of available proxies is less than the number of emails!")
